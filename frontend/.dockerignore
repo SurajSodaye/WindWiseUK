@@ -1,0 +1,24 @@
+# Node dependencies
+node_modules/
+
+# Local build artifacts (built inside Docker multi-stage build)
+dist/
+dist-ssr/
+
+# Local environment & secrets (use Docker build args or Nginx proxy instead)
+.env
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

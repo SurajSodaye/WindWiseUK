@@ -1,0 +1,29 @@
+# Python virtual environment
+.venv/
+venv/
+env/
+
+# Python cache & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local databases (use persistent volume instead of baking into image)
+*.db
+*.sqlite
+*.sqlite3
+
+# Local environment & secrets
+.env
+.env.local
+.env.*.local
+
+# Logs and OS files
+*.log
+.DS_Store
+Thumbs.db

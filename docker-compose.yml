@@ -1,0 +1,55 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: windwise-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ELEXON_BASE_URL=https://data.elexon.co.uk/bmrs/api/v1
+      - ELEXON_TIMEOUT_SECONDS=30.0
+      - CACHE_DB_PATH=/app/data/windwise_cache.db
+      - ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173,http://127.0.0.1:5173
+    volumes:
+      - backend_data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - windwise_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE_URL=
+    container_name: windwise-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:80/"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    networks:
+      - windwise_network
+
+volumes:
+  backend_data:
+    name: windwise_backend_data
+
+networks:
+  windwise_network:
+    name: windwise_network
+    driver: bridge
